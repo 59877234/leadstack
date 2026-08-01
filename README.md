@@ -4,7 +4,7 @@ Merge and deduplicate real-estate lead lists from multiple providers
 (PropStream, ListSource, BatchLeads, or similar) into one clean CSV,
 ranked by how many source lists each lead appeared on.
 
-Live app: https://leadstack.streamlit.app
+Live app: https://getleadstack-app.streamlit.app
 
 ## Running locally
 
