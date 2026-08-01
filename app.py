@@ -5,14 +5,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Local dev reads GEMINI_API_KEY from .env (via load_dotenv above). Streamlit
+# Local dev reads secrets from .env (via load_dotenv above). Streamlit
 # Community Cloud has no .env file — secrets are set in its dashboard and
-# exposed via st.secrets instead, so bridge that into the same env var the
+# exposed via st.secrets instead, so bridge those into the same env vars the
 # rest of the code already reads. st.secrets raises rather than returning
 # empty when no secrets.toml exists at all (e.g. local dev), hence the guard.
 try:
-    if "GEMINI_API_KEY" in st.secrets:
-        os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
+    for key in ("GEMINI_API_KEY", "PAYHIP_PRODUCT_SECRET_KEY"):
+        if key in st.secrets:
+            os.environ[key] = st.secrets[key]
 except FileNotFoundError:
     pass
 
@@ -33,7 +34,7 @@ if "licensed" not in st.session_state:
 
 if not st.session_state.licensed:
     st.subheader("Enter your license key")
-    st.write("You'll find this in your Gumroad receipt or purchase confirmation.")
+    st.write("You'll find this in your Gumroad or Payhip receipt or purchase confirmation.")
     license_key = st.text_input("License key", type="password")
     if st.button("Unlock"):
         is_valid, error_message = verify_license(license_key)
