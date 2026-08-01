@@ -17,6 +17,7 @@ except FileNotFoundError:
     pass
 
 from src.dedup import stack_uploaded_files
+from src.license import verify_license
 
 st.set_page_config(page_title="LeadStack", page_icon="🏚️")
 st.title("LeadStack")
@@ -26,6 +27,22 @@ st.write(
     "and ranks leads by how many lists they appeared on — the ones on "
     "multiple lists are your hottest prospects."
 )
+
+if "licensed" not in st.session_state:
+    st.session_state.licensed = False
+
+if not st.session_state.licensed:
+    st.subheader("Enter your license key")
+    st.write("You'll find this in your Gumroad receipt or purchase confirmation.")
+    license_key = st.text_input("License key", type="password")
+    if st.button("Unlock"):
+        is_valid, error_message = verify_license(license_key)
+        if is_valid:
+            st.session_state.licensed = True
+            st.rerun()
+        else:
+            st.error(error_message)
+    st.stop()
 
 uploaded_files = st.file_uploader(
     "Upload CSV files", type="csv", accept_multiple_files=True
